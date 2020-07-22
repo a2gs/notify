@@ -33,8 +33,8 @@ except Exception as e:
 	exit(1)
 
 
-a.notify('Debug', "Message A")
-a.notify('Notify', "Message N")
-a.notify('DBError', "Message B")
+a.notify('Debug', "Message Aaa")
+a.notify('Notify', "Message Nnn")
+a.notify('DBError', "Message Bbb")
 
 print("Ok")

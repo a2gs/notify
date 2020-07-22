@@ -69,10 +69,8 @@ class notifyTwitter():
 		except:
 			raise
 
-		if self._usrTwtt == False:
-			return False
-
-		return True
+		# I 'love' and read documentations :/ ....
+		return False if self._usrTwtt == False else True
 
 	def notify(self, msg):
 		self._lastStatus = self._twttcli.update_status(msg)
