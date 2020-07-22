@@ -15,7 +15,7 @@ class notifyLog():
 	def __init__(self):
 		print('log __init__')
 
-	def cfg(self):
+	def cfg(self, c : dict = {}):
 		print('log cfg')
 
 	def open(self):
@@ -46,33 +46,36 @@ class notifyTwitter():
 		self._twttAuth      = object()
 		self._lastStatus    = object()
 		self._usrTwtt       = object()
-		print('twitter __init__')
 
-	def cfg(self, consapikey : str = '', consapikeysek : str = '', accsstkn : str = '', accsstknsek : str = '') -> bool:
-		self._ConsAPIKey    = consapikey
-		self._ConsAPIKeySek = consapikeysek
-		self._AccssTkn      = accsstkn
-		self._AccssTknSek   = accsstknsek
-
-		self._twttAuth = tweepy.OAuthHandler(self._ConsAPIKey, self._ConsAPIKeySek)
-		self._twttAuth.set_access_token(self._AccssTkn, self._AccssTknSek)
-
-		self._twttcli = tweepy.API(self._twttAuth)
-
-		print('twitter cfg')
-
+	def cfg(self, c : dict = {}):
 		try:
-			self._usrTwtt = self.twttcli.verify_credentials()
-			return True
+			self._ConsAPIKey    = c['Consumer API Key']
+			self._ConsAPIKeySek = c['Consumer API Security Key']
+			self._AccssTkn      = c['Access Token']
+			self._AccssTknSek   = c['Accesst Security Token']
+		except Exception as e:
+			raise (e)
+
+	def open(self) -> bool:
+		try:
+			self._twttAuth = tweepy.OAuthHandler(self._ConsAPIKey, self._ConsAPIKeySek)
+			self._twttAuth.set_access_token(self._AccssTkn, self._AccssTknSek)
+			# forcing an error...
+			#self._twttAuth.set_access_token("","")
+			self._twttcli = tweepy.API(self._twttAuth)
+			self._usrTwtt = self._twttcli.verify_credentials()
+		except tweepy.TweepError as e:
+			raise ValueError(f"(Twitter authorization: {e.response.text})")
 		except:
+			raise
+
+		if self._usrTwtt == False:
 			return False
 
-	def open(self):
-		print('twitter open')
+		return True
 
-	def notify(selfself, msg):
-		print('twitter notify')
-		self._lastStatus = self._twttcli.update_status(message)
+	def notify(self, msg):
+		self._lastStatus = self._twttcli.update_status(msg)
 		return self._lastStatus
 
 	def close(self):
@@ -109,14 +112,15 @@ class notify(Exception):
 
 		self._level = list(set(l) & set(notifyLevels))
 
-	def cfg(self):
-		return self._notifyObj.close()
+	def cfg(self, c : dict = {}):
+		return self._notifyObj.cfg(c)
 
-	def open(self):
+	def open(self) -> bool:
 		return self._notifyObj.open()
 
 	def notify(self, level, msg):
-		return self._notifyObj.notify(msg)
+		if level in self._level:
+			return self._notifyObj.notify(msg)
 
 	def close(self):
 		return self._notifyObj.close()
