@@ -28,41 +28,41 @@ class notifyLog():
 		print('log close')
 
 class notifyTwitter():
-	ConsAPIKey    = str()
-	ConsAPIKeySek = str()
-	AccssTkn      = str()
-	AccssTknSek   = str()
-	twttcli       = object()
-	twttAuth      = object()
-	lastStatus    = object()
-	usrTwtt       = object()
+	_ConsAPIKey    = str()
+	_ConsAPIKeySek = str()
+	_AccssTkn      = str()
+	_AccssTknSek   = str()
+	_twttcli       = object()
+	_twttAuth      = object()
+	_lastStatus    = object()
+	_usrTwtt       = object()
 
 	def __init__(self):
-		self.ConsAPIKey    = str()
-		self.ConsAPIKeySek = str()
-		self.AccssTkn      = str()
-		self.AccssTknSek   = str()
-		self.twttcli       = object()
-		self.twttAuth      = object()
-		self.lastStatus    = object()
-		self.usrTwtt       = object()
+		self._ConsAPIKey    = str()
+		self._ConsAPIKeySek = str()
+		self._AccssTkn      = str()
+		self._AccssTknSek   = str()
+		self._twttcli       = object()
+		self._twttAuth      = object()
+		self._lastStatus    = object()
+		self._usrTwtt       = object()
 		print('twitter __init__')
 
-	def cfg(self, consapikey : str, consapikeysek : str, accsstkn : str, accsstknsek : str) -> bool:
-		self.ConsAPIKey    = consapikey
-		self.ConsAPIKeySek = consapikeysek
-		self.AccssTkn      = accsstkn
-		self.AccssTknSek   = accsstknsek
+	def cfg(self, consapikey : str = '', consapikeysek : str = '', accsstkn : str = '', accsstknsek : str = '') -> bool:
+		self._ConsAPIKey    = consapikey
+		self._ConsAPIKeySek = consapikeysek
+		self._AccssTkn      = accsstkn
+		self._AccssTknSek   = accsstknsek
 
-		self.twttAuth = tweepy.OAuthHandler(self.ConsAPIKey, self.ConsAPIKeySek)
-		self.twttAuth.set_access_token(self.AccssTkn, self.AccssTknSek)
+		self._twttAuth = tweepy.OAuthHandler(self._ConsAPIKey, self._ConsAPIKeySek)
+		self._twttAuth.set_access_token(self._AccssTkn, self._AccssTknSek)
 
-		self.twttcli = tweepy.API(self.twttAuth)
+		self._twttcli = tweepy.API(self._twttAuth)
 
 		print('twitter cfg')
 
 		try:
-			self.usrTwtt = self.twttcli.verify_credentials()
+			self._usrTwtt = self.twttcli.verify_credentials()
 			return True
 		except:
 			return False
@@ -72,16 +72,16 @@ class notifyTwitter():
 
 	def notify(selfself, msg):
 		print('twitter notify')
-		self.lastStatus = self.twttcli.update_status(message)
-		return self.lastStatus
+		self._lastStatus = self._twttcli.update_status(message)
+		return self._lastStatus
 
 	def close(self):
 		print('twitter close')
 
 class notify(Exception):
-	_type = str('')
+	_type      = str('')
 	_notifyObj = object()
-	_level = list('')
+	_level     = list('')
 
 	def __init__(self, t : str = '', l : list = []):
 
