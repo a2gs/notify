@@ -3,8 +3,6 @@
 
 # Andre Augusto Giannotti Scota (https://sites.google.com/view/a2gs/)
 
-import tweepy
-
 notifyTypes = ['log', 'twitter', 'discord', 'telegram']
 notifyLevels = ['MustNotify', 'SystemError', 'DBError', 'Warning', 'Notify', 'Debug']
 
@@ -85,6 +83,8 @@ class notifyTwitter():
 			raise (e)
 
 	def open(self) -> bool:
+		import tweepy
+
 		try:
 			self._twttAuth = tweepy.OAuthHandler(self._ConsAPIKey, self._ConsAPIKeySek)
 			self._twttAuth.set_access_token(self._AccssTkn, self._AccssTknSek)
