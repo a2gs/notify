@@ -12,20 +12,48 @@ notifyLevels = ['MustNotify', 'SystemError', 'DBError', 'Warning', 'Notify', 'De
 # https://realpython.com/factory-method-python/
 
 class notifyLog():
+	_f = object()
+	_fileName = str()
+	_openFlags = str()
+	_flush = bool()
+
 	def __init__(self):
-		print('log __init__')
+		self._f = object()
+		self._fileName = ""
+		self._openFlags = "w"
+		self._flush = False
 
 	def cfg(self, c : dict = {}):
-		print('log cfg')
+		try:
+			self._fileName = c['File Name']
 
-	def open(self):
-		print('log open')
+			if c['Append'] == True:
+				self._openFlags = "a"
 
-	def notify(selfself, msg):
-		print('log notify')
+			if c['Exclusive creation'] == True:
+				self._openFlags = "x"
+
+			self._flush = c['Flush on Notify']
+		except Exception as e:
+			raise (e)
+
+	def open(self) -> bool:
+		try:
+			self._f = open(self._fileName, self._openFlags)
+		except:
+			raise
+
+	def notify(self, msg):
+		try:
+			self._f.write(msg)
+		except:
+			raise
+
+		if self._flush == True:
+			self._f.flush()
 
 	def close(self):
-		print('log close')
+		self._f.close()
 
 class notifyTwitter():
 	_ConsAPIKey    = str()
@@ -77,7 +105,7 @@ class notifyTwitter():
 		return self._lastStatus
 
 	def close(self):
-		print('twitter close')
+		pass
 
 class notify(Exception):
 	_type      = str('')
@@ -108,7 +136,7 @@ class notify(Exception):
 			self._type = t
 			self._notifyObj = None
 
-		self._level = list(set(l) & set(notifyLevels))
+		self._level = list(set(l) & set(notifyLevels)) + ['MustNotify']
 
 	def cfg(self, c : dict = {}):
 		return self._notifyObj.cfg(c)
@@ -128,7 +156,8 @@ class notify(Exception):
 		print(self._level)
 
 	def levelRemove(self, l : str = ''):
-		self._level.remove(l)
+		if l != 'MustNotify':
+			self._level.remove(l)
 
 	def level(self) -> list:
 		return self._level
